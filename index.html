@@ -1,1 +1,105 @@
-H
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello! This is a Cute Baby Name Generator!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #f2e9e4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 36px;
+            color: #e07a5f;
+            margin-bottom: 20px;
+        }
+        #generator {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        label, select, button {
+            display: block;
+            margin-bottom: 10px;
+        }
+        #output {
+            font-size: 24px;
+            margin-top: 10px;
+            color: #333;
+        }
+        #location {
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cute Baby Name Generator</h1>
+    <div id="generator">
+        <label for="gender">Select the baby's gender:</label>
+        <select id="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <button onclick="generateName()">Generate Name</button>
+        <div id="output"></div>
+        <p id="location">Your location will appear here.</p>
+    </div>
+
+    <script>
+        const maleNames = ["James", "William", "Liam", "Benjamin", "Lucas", "Henry", "Ethan", "Michael", "Alexander", "Daniel"];
+        const femaleNames = ["Olivia", "Emma", "Ava", "Charlotte", "Sophia", "Amelia", "Mia", "Harper", "Evelyn", "Abigail"];
+
+        function generateName() {
+            const gender = document.getElementById("gender").value;
+            const output = document.getElementById("output");
+
+            let names = [];
+
+            if (gender === "male") {
+                names = maleNames;
+            } else if (gender === "female") {
+                names = femaleNames;
+            }
+
+            if (names.length > 0) {
+                const randomIndex = Math.floor(Math.random() * names.length);
+                const randomName = names[randomIndex];
+                output.textContent = `Random ${gender} name: ${randomName}`;
+            } else {
+                output.textContent = "Please select a gender.";
+            }
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showLocation);
+            } else {
+                document.getElementById("location").textContent = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showLocation(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const locationText = `Your location: Latitude ${latitude}, Longitude ${longitude}`;
+            document.getElementById("location").textContent = locationText;
+        }
+
+        // Get the user's location when the page loads (optional)
+        getLocation();
+    </script>
+</body>
+</html>
