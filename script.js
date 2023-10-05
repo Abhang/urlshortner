@@ -1,11 +1,15 @@
-// Smooth scroll effect for anchor links
+// Smooth scroll effect for anchor links with slide-in animation
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
 
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
+        const targetSection = document.querySelector(this.getAttribute('href'));
+        targetSection.scrollIntoView({
             behavior: 'smooth'
         });
+
+        // Add a class to trigger the slide-in animation
+        targetSection.classList.add('slide-in');
     });
 });
 
