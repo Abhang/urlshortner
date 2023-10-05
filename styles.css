@@ -1,44 +1,3 @@
-body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-header {
-    background-color: #001c4a;
-    color: #fff;
-    text-align: center;
-    padding: 50px 0;
-}
-
-h1, h2 {
-    color: #001c4a;
-}
-
-.services, .about, .contact {
-    background-color: #fff;
-    padding: 50px 0;
-    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.1);
-}
-
-footer {
-    background-color: #001c4a;
-    color: #fff;
-    text-align: center;
-    padding: 20px 0;
-}
-
-.services p, .about p, .contact p {
-    color: #333;
-}
-
 /* Add some animation to the header */
 header p {
     font-size: 1.2em;
@@ -52,5 +11,23 @@ header p {
     }
     to {
         opacity: 1;
+    }
+}
+
+/* Slide-in animation for new sections */
+.slide-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideIn 0.5s ease-in-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
