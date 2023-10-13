@@ -113,19 +113,24 @@
   <div id="statistics">
     <p><strong>Accuracy:</strong> <span id="accuracy">0%</span></p>
     <p><strong>Average time per question:</strong> <span id="averageTime">0:00:00</span></p>
+    <p><strong>Total Questions Solved:</strong> <span id="totalQuestionsSolved">0</span></p>
   </div>
 
   <script>
-    let startTime, lapCount = 0, laps = [], answers = [], correctAnswers = [], selectedAnswer = '';
+    let startTime, lastLapTime, interval, lapCount = 0, laps = [], answers = [], correctAnswers = [], selectedAnswer = '';
 
     function startTimer() {
-      startTime = new Date().getTime();
-      lapCount = 0;
-      laps = [];
-      answers = [];
-      correctAnswers = [];
-      selectedAnswer = '';
-      updateTimer();
+      if (!startTime) {
+        startTime = new Date().getTime();
+        lastLapTime = startTime;
+        lapCount = 0;
+        laps = [];
+        answers = [];
+        correctAnswers = [];
+        selectedAnswer = '';
+        updateTimer();
+        interval = setInterval(updateTimer, 1000);
+      }
     }
 
     function recordAnswer(answer) {
@@ -135,14 +140,20 @@
 
     function recordLap() {
       if (startTime) {
-        const lapTime = new Date().getTime() - startTime;
+        const currentTime = new Date().getTime();
+        const lapTime = currentTime - lastLapTime;
+        lastLapTime = currentTime;
         lapCount++;
         laps.push(formatTime(lapTime));
         answers.push(selectedAnswer);
         correctAnswers.push(''); // Initialize correct answer as empty for now
 
+        if (selectedAnswer !== 'Passage') {
+          // Increment total questions solved only if the answer is not 'Passage'
+          updateTotalQuestionsSolved();
+        }
+
         selectedAnswer = ''; // Reset selected answer for the next lap
-        updateTimer();
         updateLapTable();
         updateAnswerButtons();
       }
@@ -151,14 +162,20 @@
     function stopTimer() {
       if (startTime) {
         const endTime = new Date().getTime();
+        const lapTime = endTime - lastLapTime;
         lapCount++;
-        laps.push(formatTime(endTime - startTime));
+        laps.push(formatTime(lapTime));
         answers.push(selectedAnswer);
         correctAnswers.push(''); // Initialize correct answer as empty for now
 
+        if (selectedAnswer !== 'Passage') {
+          // Increment total questions solved only if the answer is not 'Passage'
+          updateTotalQuestionsSolved();
+        }
+
         selectedAnswer = ''; // Reset selected answer for the next lap
+        clearInterval(interval);
         startTime = null; // Stop the timer
-        updateTimer();
         updateLapTable();
         updateAnswerButtons();
         updateStatistics();
@@ -176,8 +193,7 @@
       const date = new Date(milliseconds);
       const minutes = date.getUTCMinutes().toString().padStart(2, '0');
       const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-      const millis = date.getUTCMilliseconds().toString().padStart(3, '0');
-      return `${minutes}:${seconds}:${millis}`;
+      return `${minutes}:${seconds}`;
     }
 
     function updateLapTable() {
@@ -287,22 +303,31 @@
     function updateStatistics() {
       const accuracySpan = document.getElementById('accuracy');
       const averageTimeSpan = document.getElementById('averageTime');
+      const totalQuestionsSolvedSpan = document.getElementById('totalQuestionsSolved');
 
       const totalQuestions = laps.length;
+      const totalQuestionsSolved = totalQuestions - answers.filter(answer => answer === 'Passage').length;
       const tickMarks = document.querySelectorAll('.tick').length;
       const crossMarks = document.querySelectorAll('.cross').length;
 
       const accuracy = (tickMarks / (tickMarks + crossMarks)) * 100 || 0; // Avoid division by zero
       const totalMilliseconds = laps.reduce((acc, lap) => acc + lapToMilliseconds(lap), 0);
-      const averageTime = totalMilliseconds / totalQuestions || 0; // Avoid division by zero
+      const averageTime = totalMilliseconds / totalQuestionsSolved || 0; // Avoid division by zero
 
       accuracySpan.innerText = `${accuracy.toFixed(2)}%`;
       averageTimeSpan.innerText = formatTime(averageTime);
+      totalQuestionsSolvedSpan.innerText = totalQuestionsSolved;
+    }
+
+    function updateTotalQuestionsSolved() {
+      const totalQuestionsSolvedSpan = document.getElementById('totalQuestionsSolved');
+      const totalQuestionsSolved = parseInt(totalQuestionsSolvedSpan.innerText) + 1;
+      totalQuestionsSolvedSpan.innerText = totalQuestionsSolved;
     }
 
     function lapToMilliseconds(lapTime) {
-      const [minutes, seconds, millis] = lapTime.split(':');
-      return (parseInt(minutes) * 60 + parseInt(seconds)) * 1000 + parseInt(millis);
+      const [minutes, seconds] = lapTime.split(':');
+      return (parseInt(minutes) * 60 + parseInt(seconds)) * 1000;
     }
   </script>
 </body>
