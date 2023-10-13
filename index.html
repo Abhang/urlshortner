@@ -1,55 +1,309 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Your Consulting Firm</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch with Laps and Answers</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+
+    #timer {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    #lapTable {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    #lapTable, #lapTable th, #lapTable td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    #lapTable th {
+      background-color: #f2f2f2;
+    }
+
+    #lapTable tr.highlighted {
+      background-color: #ffcccb; /* Light red color for highlighting */
+    }
+
+    #copyButton {
+      margin-top: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .buttonRow {
+      display: flex;
+      justify-content: center;
+      margin: 10px;
+    }
+
+    .answerButtons {
+      margin: 5px;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .selectedAnswer {
+      background-color: #aaf0d1; /* Light green color for selected answer */
+    }
+
+    .correctAnswerSelect {
+      width: 80px;
+    }
+
+    .resultColumn {
+      font-size: 1.5em;
+    }
+
+    .tick {
+      color: #008000; /* Green color for tick */
+    }
+
+    .cross {
+      color: #ff0000; /* Red color for cross */
+    }
+
+    #statistics {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
+  <h1>Stopwatch with Laps and Answers</h1>
+  <div id="timer">00:00:00</div>
+  <button onclick="startTimer()">Start</button>
+  <button onclick="recordLap()">Lap</button>
+  <button onclick="stopTimer()">Stop</button>
 
-    <header>
-        <div class="container">
-            <h1>Your Consulting Firm</h1>
-            <p>Unlocking Business Potential</p>
-        </div>
-    </header>
+  <div class="buttonRow">
+    <button class="answerButtons" onclick="recordAnswer('A')">A</button>
+    <button class="answerButtons" onclick="recordAnswer('B')">B</button>
+    <button class="answerButtons" onclick="recordAnswer('C')">C</button>
+    <button class="answerButtons" onclick="recordAnswer('D')">D</button>
+    <button class="answerButtons" onclick="recordAnswer('E')">E</button>
+    <button class="answerButtons" onclick="recordAnswer('Passage')">Passage</button>
+  </div>
 
-    <nav class="top-menu">
-        <div class="container">
-            <ul>
-                <li><a href="#intro">Home</a></li>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+  <table id="lapTable">
+    <thead>
+      <tr>
+        <th>Lap</th>
+        <th>Time</th>
+        <th>Answer</th>
+        <th>Correct Ans</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody id="lapBody"></tbody>
+  </table>
 
-    <section id="intro" class="intro">
-        <div class="container">
-            <h2>Welcome to Your Consulting Firm</h2>
-            <p>At Your Consulting Firm, we thrive on transforming challenges into opportunities...</p>
-            <!-- Rest of the content -->
-        </div>
-    </section>
+  <button id="copyButton" onclick="copyTable()">Copy Table</button>
 
-    <section id="about" class="about">
-        <div class="container">
-            <h2>About Us</h2>
-            <p>Your Consulting Firm is dedicated to delivering high-impact solutions through expert management consulting services.</p>
-        </div>
-    </section>
+  <div id="statistics">
+    <p><strong>Accuracy:</strong> <span id="accuracy">0%</span></p>
+    <p><strong>Average time per question:</strong> <span id="averageTime">0:00:00</span></p>
+  </div>
 
-    <!-- Other sections... -->
+  <script>
+    let startTime, lapCount = 0, laps = [], answers = [], correctAnswers = [], selectedAnswer = '';
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 Your Consulting Firm. All Rights Reserved.</p>
-        </div>
-    </footer>
+    function startTimer() {
+      startTime = new Date().getTime();
+      lapCount = 0;
+      laps = [];
+      answers = [];
+      correctAnswers = [];
+      selectedAnswer = '';
+      updateTimer();
+    }
 
-    <script src="script.js"></script>
+    function recordAnswer(answer) {
+      selectedAnswer = answer;
+      updateAnswerButtons();
+    }
+
+    function recordLap() {
+      if (startTime) {
+        const lapTime = new Date().getTime() - startTime;
+        lapCount++;
+        laps.push(formatTime(lapTime));
+        answers.push(selectedAnswer);
+        correctAnswers.push(''); // Initialize correct answer as empty for now
+
+        selectedAnswer = ''; // Reset selected answer for the next lap
+        updateTimer();
+        updateLapTable();
+        updateAnswerButtons();
+      }
+    }
+
+    function stopTimer() {
+      if (startTime) {
+        const endTime = new Date().getTime();
+        lapCount++;
+        laps.push(formatTime(endTime - startTime));
+        answers.push(selectedAnswer);
+        correctAnswers.push(''); // Initialize correct answer as empty for now
+
+        selectedAnswer = ''; // Reset selected answer for the next lap
+        startTime = null; // Stop the timer
+        updateTimer();
+        updateLapTable();
+        updateAnswerButtons();
+        updateStatistics();
+      }
+    }
+
+    function updateTimer() {
+      if (startTime) {
+        const currentTime = new Date().getTime() - startTime;
+        document.getElementById('timer').innerText = formatTime(currentTime);
+      }
+    }
+
+    function formatTime(milliseconds) {
+      const date = new Date(milliseconds);
+      const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+      const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+      const millis = date.getUTCMilliseconds().toString().padStart(3, '0');
+      return `${minutes}:${seconds}:${millis}`;
+    }
+
+    function updateLapTable() {
+      const lapBody = document.getElementById('lapBody');
+      lapBody.innerHTML = '';
+
+      for (let i = 0; i < laps.length; i++) {
+        const row = lapBody.insertRow();
+        const lapCell = row.insertCell(0);
+        const timeCell = row.insertCell(1);
+        const answerCell = row.insertCell(2);
+        const correctAnswerCell = row.insertCell(3);
+        const resultCell = row.insertCell(4);
+
+        lapCell.innerText = i + 1;
+        timeCell.innerText = laps[i];
+        answerCell.innerText = answers[i];
+
+        const correctAnswerSelect = createCorrectAnswerSelect(i);
+        correctAnswerCell.appendChild(correctAnswerSelect);
+
+        const resultIcon = createResultIcon(i);
+        resultCell.appendChild(resultIcon);
+
+        // Highlight laps under 1 minute and 30 seconds
+        const lapTimeInSeconds = lapToSeconds(laps[i]);
+        if (lapTimeInSeconds < 90) {
+          row.classList.add('highlighted');
+        }
+      }
+    }
+
+    function createCorrectAnswerSelect(index) {
+      const select = document.createElement('select');
+      select.classList.add('correctAnswerSelect');
+      const options = ['A', 'B', 'C', 'D', 'E', 'Passage', ''];
+      options.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option;
+        optionElement.text = option;
+        select.appendChild(optionElement);
+      });
+
+      select.value = correctAnswers[index];
+      select.addEventListener('change', function () {
+        correctAnswers[index] = this.value;
+        updateResultColumn(index);
+        updateStatistics();
+      });
+
+      return select;
+    }
+
+    function createResultIcon(index) {
+      const resultIcon = document.createElement('span');
+      resultIcon.classList.add('resultColumn');
+
+      const answer = answers[index];
+      const correctAnswer = correctAnswers[index];
+
+      if (answer === 'Passage') {
+        resultIcon.innerText = ''; // No display for "Passage"
+      } else if (answer === correctAnswer) {
+        resultIcon.innerText = '✔';
+        resultIcon.classList.add('tick');
+      } else {
+        resultIcon.innerText = '✘';
+        resultIcon.classList.add('cross');
+      }
+
+      return resultIcon;
+    }
+
+    function copyTable() {
+      const lapTable = document.getElementById('lapTable');
+      const range = document.createRange();
+      range.selectNode(lapTable);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+      alert('Table copied to clipboard!');
+    }
+
+    function lapToSeconds(lapTime) {
+      const [minutes, seconds] = lapTime.split(':');
+      return parseInt(minutes) * 60 + parseInt(seconds);
+    }
+
+    function updateAnswerButtons() {
+      const buttons = document.querySelectorAll('.answerButtons');
+      buttons.forEach(button => {
+        button.classList.remove('selectedAnswer');
+        if (button.innerText === selectedAnswer) {
+          button.classList.add('selectedAnswer');
+        }
+      });
+    }
+
+    function updateResultColumn(index) {
+      const resultCell = document.getElementById('lapTable').rows[index + 1].cells[4];
+      const resultIcon = createResultIcon(index);
+      resultCell.innerHTML = '';
+      resultCell.appendChild(resultIcon);
+    }
+
+    function updateStatistics() {
+      const accuracySpan = document.getElementById('accuracy');
+      const averageTimeSpan = document.getElementById('averageTime');
+
+      const totalQuestions = laps.length;
+      const tickMarks = document.querySelectorAll('.tick').length;
+      const crossMarks = document.querySelectorAll('.cross').length;
+
+      const accuracy = (tickMarks / (tickMarks + crossMarks)) * 100 || 0; // Avoid division by zero
+      const totalMilliseconds = laps.reduce((acc, lap) => acc + lapToMilliseconds(lap), 0);
+      const averageTime = totalMilliseconds / totalQuestions || 0; // Avoid division by zero
+
+      accuracySpan.innerText = `${accuracy.toFixed(2)}%`;
+      averageTimeSpan.innerText = formatTime(averageTime);
+    }
+
+    function lapToMilliseconds(lapTime) {
+      const [minutes, seconds, millis] = lapTime.split(':');
+      return (parseInt(minutes) * 60 + parseInt(seconds)) * 1000 + parseInt(millis);
+    }
+  </script>
 </body>
 </html>
