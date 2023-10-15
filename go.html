@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch with Laps, Answers, and Copy</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+
+    .section {
+      margin-top: 50px;
+    }
+
+    .section h2 {
+      margin-bottom: 20px;
+    }
+
+    .timer {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .buttonRow {
+      display: flex;
+      justify-content: center;
+      margin: 10px;
+    }
+
+    .answerButtons {
+      margin: 5px;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .selectedAnswer {
+      background-color: #aaf0d1; /* Light green color for selected answer */
+    }
+
+    .lapTable {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    .lapTable, .lapTable th, .lapTable td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .lapTable th {
+      background-color: #f2f2f2;
+    }
+
+    .lapTable tr.highlighted {
+      background-color: #ffcccb; /* Light red color for highlighting */
+    }
+
+    .copyButton {
+      margin-top: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .statistics {
+      margin-top: 20px;
+    }
+    
+    
+    .selectedAnswer {
+  	  background-color: #ff6666; /* Red color for selected answer */
+  	  color: white; /* Text color for better visibility */
+	}
+
+  </style>
+</head>
+<body>
+
+  <div class="section">
+    <h2>Reading Comprehension</h2>
+    <div class="timer" id="timer1">00:00:00</div>
+    <button onclick="startTimer(1)">Start</button>
+    <button onclick="recordLap(1)">Lap</button>
+    <button onclick="stopTimer(1)">Stop</button>
+
+    <div class="buttonRow">
+      <button class="answerButtons" onclick="recordAnswer('A', 1)">A</button>
+      <button class="answerButtons" onclick="recordAnswer('B', 1)">B</button>
+      <button class="answerButtons" onclick="recordAnswer('C', 1)">C</button>
+      <button class="answerButtons" onclick="recordAnswer('D', 1)">D</button>
+      <button class="answerButtons" onclick="recordAnswer('E', 1)">E</button>
+      <button class="answerButtons" onclick="recordAnswer('Passage', 1)">Passage</button>
+    </div>
+
+    <table class="lapTable" id="lapTable1">
+      <thead>
+        <tr>
+          <th>Lap</th>
+          <th>Time</th>
+          <th>Answer</th>
+          <th>Correct Ans</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody id="lapBody1"></tbody>
+    </table>
+
+    <button class="copyButton" onclick="copyTable(1)">Copy Table</button>
+
+    <div class="statistics" id="statistics1">
+      <p><strong>Accuracy:</strong> <span id="accuracy1">0%</span></p>
+      <p><strong>Average time per question:</strong> <span id="averageTime1">0:00:00</span></p>
+      <p><strong>No Of Questions Solved within 1 minute 30 seconds:</strong> <span id="questionsWithinTime1">0</span></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Critical Reasoning</h2>
+    <div class="timer" id="timer2">00:00:00</div>
+    <button onclick="startTimer(2)">Start</button>
+    <button onclick="recordLap(2)">Lap</button>
+    <button onclick="stopTimer(2)">Stop</button>
+
+    <div class="buttonRow">
+      <button class="answerButtons" onclick="recordAnswer('A', 2)">A</button>
+      <button class="answerButtons" onclick="recordAnswer('B', 2)">B</button>
+      <button class="answerButtons" onclick="recordAnswer('C', 2)">C</button>
+      <button class="answerButtons" onclick="recordAnswer('D', 2)">D</button>
+      <button class="answerButtons" onclick="recordAnswer('E', 2)">E</button>
+      <button class="answerButtons" onclick="recordAnswer('Passage', 2)">Passage</button>
+    </div>
+
+    <table class="lapTable" id="lapTable2">
+      <thead>
+        <tr>
+          <th>Lap</th>
+          <th>Time</th>
+          <th>Answer</th>
+          <th>Correct Ans</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody id="lapBody2"></tbody>
+    </table>
+
+    <button class="copyButton" onclick="copyTable(2)">Copy Table</button>
+
+    <div class="statistics" id="statistics2">
+      <p><strong>Accuracy:</strong> <span id="accuracy2">0%</span></p>
+      <p><strong>Average time per question:</strong> <span id="averageTime2">0:00:00</span></p>
+      <p><strong>No Of Questions Solved within 1 minute 30 seconds:</strong> <span id="questionsWithinTime2">0</span></p>
+    </div>
+  </div>
+ <div class="section">
+    <h2>Sentence Correction</h2>
+    <div class="timer" id="timer3">00:00:00</div>
+    <button onclick="startTimer(3)">Start</button>
+    <button onclick="recordLap(3)">Lap</button>
+    <button onclick="stopTimer(3)">Stop</button>
+
+    <div class="buttonRow">
+      <button class="answerButtons" onclick="recordAnswer('A', 3)">A</button>
+      <button class="answerButtons" onclick="recordAnswer('B', 3)">B</button>
+      <button class="answerButtons" onclick="recordAnswer('C', 3)">C</button>
+      <button class="answerButtons" onclick="recordAnswer('D', 3)">D</button>
+      <button class="answerButtons" onclick="recordAnswer('E', 3)">E</button>
+      <button class="answerButtons" onclick="recordAnswer('Passage', 3)">Passage</button>
+    </div>
+
+    <table class="lapTable" id="lapTable3">
+      <thead>
+        <tr>
+          <th>Lap</th>
+          <th>Time</th>
+          <th>Answer</th>
+          <th>Correct Ans</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody id="lapBody3"></tbody>
+    </table>
+
+    <button class="copyButton" onclick="copyTable(3)">Copy Table</button>
+
+    <div class="statistics" id="statistics3">
+      <p><strong>Accuracy:</strong> <span id="accuracy3">0%</span></p>
+      <p><strong>Average time per question:</strong> <span id="averageTime3">0:00:00</span></p>
+      <p><strong>No Of Questions Solved within 1 minute 30 seconds:</strong> <span id="questionsWithinTime3">0</span></p>
+    </div>
+  </div>
+ <div class="section">
+    <h2>Quants</h2>
+    <div class="timer" id="timer4">00:00:00</div>
+    <button onclick="startTimer(4)">Start</button>
+    <button onclick="recordLap(4)">Lap</button>
+    <button onclick="stopTimer(4)">Stop</button>
+
+    <div class="buttonRow">
+      <button class="answerButtons" onclick="recordAnswer('A', 4)">A</button>
+      <button class="answerButtons" onclick="recordAnswer('B', 4)">B</button>
+      <button class="answerButtons" onclick="recordAnswer('C', 4)">C</button>
+      <button class="answerButtons" onclick="recordAnswer('D', 4)">D</button>
+      <button class="answerButtons" onclick="recordAnswer('E', 4)">E</button>
+      <button class="answerButtons" onclick="recordAnswer('Passage', 4)">Passage</button>
+    </div>
+
+    <table class="lapTable" id="lapTable4">
+      <thead>
+        <tr>
+          <th>Lap</th>
+          <th>Time</th>
+          <th>Answer</th>
+          <th>Correct Ans</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody id="lapBody4"></tbody>
+    </table>
+
+    <button class="copyButton" onclick="copyTable(4)">Copy Table</button>
+
+    <div class="statistics" id="statistics4">
+      <p><strong>Accuracy:</strong> <span id="accuracy4">0%</span></p>
+      <p><strong>Average time per question:</strong> <span id="averageTime4">0:00:00</span></p>
+      <p><strong>No Of Questions Solved within 1 minute 30 seconds:</strong> <span id="questionsWithinTime4">0</span></p>
+    </div>
+  </div>
+
+  <!-- Repeat similar sections for other categories (Sentence Correction, Quants) -->
+
+  <script>
+    // Define separate variables for each category
+    let startTime1, lastLapTime1, interval1, lapCount1 = 0, laps1 = [], answers1 = [], correctAnswers1 = [], selectedAnswer1 = '';
+    let startTime2, lastLapTime2, interval2, lapCount2 = 0, laps2 = [], answers2 = [], correctAnswers2 = [], selectedAnswer2 = '';
+    let startTime3, lastLapTime3, interval3, lapCount3 = 0, laps3 = [], answers3 = [], correctAnswers3 = [], selectedAnswer3 = '';
+    let startTime4, lastLapTime4, interval4, lapCount4 = 0, laps4 = [], answers4 = [], correctAnswers4 = [], selectedAnswer4 = '';
+
+    function startTimer(category) {
+      const startTimeVar = `startTime${category}`;
+      const lastLapTimeVar = `lastLapTime${category}`;
+      const lapCountVar = `lapCount${category}`;
+      const lapsVar = `laps${category}`;
+      const answersVar = `answers${category}`;
+      const correctAnswersVar = `correctAnswers${category}`;
+      const selectedAnswerVar = `selectedAnswer${category}`;
+
+      window[startTimeVar] = new Date().getTime();
+      window[lastLapTimeVar] = window[startTimeVar];
+      window[lapCountVar] = 0;
+      window[lapsVar] = [];
+      window[answersVar] = [];
+      window[correctAnswersVar] = [];
+      window[selectedAnswerVar] = '';
+
+      updateTimer(category);
+      window[`interval${category}`] = setInterval(() => updateTimer(category), 1000);
+    }
+
+    function recordAnswer(answer, category) {
+      window[`selectedAnswer${category}`] = answer;
+      updateAnswerButtons(category);
+    }
+
+    function recordLap(category) {
+      const startTimeVar = `startTime${category}`;
+      const lastLapTimeVar = `lastLapTime${category}`;
+      const lapCountVar = `lapCount${category}`;
+      const lapsVar = `laps${category}`;
+      const answersVar = `answers${category}`;
+      const correctAnswersVar = `correctAnswers${category}`;
+      const selectedAnswerVar = `selectedAnswer${category}`;
+
+      const currentTime = new Date().getTime();
+      const lapTime = currentTime - window[lastLapTimeVar];
+      window[lastLapTimeVar] = currentTime;
+      window[lapCountVar]++;
+      window[lapsVar].push(formatTime(lapTime));
+      window[answersVar].push(window[selectedAnswerVar]);
+      window[correctAnswersVar].push(''); // Initialize correct answer as empty for now
+
+      window[selectedAnswerVar] = ''; // Reset selected answer for the next lap
+      updateLapTable(category);
+      updateAnswerButtons(category);
+      updateStatistics(category);
+    }
+
+    function stopTimer(category) {
+      const startTimeVar = `startTime${category}`;
+      const lastLapTimeVar = `lastLapTime${category}`;
+      const lapCountVar = `lapCount${category}`;
+      const lapsVar = `laps${category}`;
+      const answersVar = `answers${category}`;
+      const correctAnswersVar = `correctAnswers${category}`;
+      const selectedAnswerVar = `selectedAnswer${category}`;
+
+      const endTime = new Date().getTime();
+      const lapTime = endTime - window[lastLapTimeVar];
+      window[lapCountVar]++;
+      window[lapsVar].push(formatTime(lapTime));
+      window[answersVar].push(window[selectedAnswerVar]);
+      window[correctAnswersVar].push(''); // Initialize correct answer as empty for now
+
+      window[selectedAnswerVar] = ''; // Reset selected answer for the next lap
+      clearInterval(window[`interval${category}`]);
+      window[startTimeVar] = null; // Stop the timer
+      updateLapTable(category);
+      updateAnswerButtons(category);
+      updateStatistics(category);
+    }
+
+    function updateTimer(category) {
+      const startTimeVar = `startTime${category}`;
+      if (window[startTimeVar]) {
+        const currentTime = new Date().getTime() - window[startTimeVar];
+        document.getElementById(`timer${category}`).innerText = formatTime(currentTime);
+      }
+    }
+
+    function formatTime(milliseconds) {
+      const date = new Date(milliseconds);
+      const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+      const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+      return `${minutes}:${seconds}`;
+    }
+
+    function updateLapTable(category) {
+      const lapBody = document.getElementById(`lapBody${category}`);
+      lapBody.innerHTML = '';
+
+      const lapCountVar = `lapCount${category}`;
+      const lapsVar = `laps${category}`;
+      const answersVar = `answers${category}`;
+
+      for (let i = 0; i < window[lapCountVar]; i++) {
+        const row = lapBody.insertRow();
+        const lapCell = row.insertCell(0);
+        const timeCell = row.insertCell(1);
+        const answerCell = row.insertCell(2);
+        const correctAnswerCell = row.insertCell(3);
+        const resultCell = row.insertCell(4);
+
+        lapCell.innerText = i + 1;
+        timeCell.innerText = window[lapsVar][i];
+        answerCell.innerText = window[answersVar][i];
+
+        const correctAnswerSelect = createCorrectAnswerSelect(i, category);
+        correctAnswerCell.appendChild(correctAnswerSelect);
+
+        const resultIcon = createResultIcon(i, category);
+        resultCell.appendChild(resultIcon);
+      }
+    }
+
+    function createCorrectAnswerSelect(index, category) {
+      const select = document.createElement('select');
+      select.classList.add('correctAnswerSelect');
+      const options = ['A', 'B', 'C', 'D', 'E', 'Passage', ''];
+      options.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option;
+        optionElement.text = option;
+        select.appendChild(optionElement);
+      });
+
+      select.value = window[`correctAnswers${category}`][index];
+      select.addEventListener('change', function () {
+        window[`correctAnswers${category}`][index] = this.value;
+        updateResultColumn(index, category);
+        updateStatistics(category);
+      });
+
+      return select;
+    }
+
+    function createResultIcon(index, category) {
+      const resultIcon = document.createElement('span');
+      resultIcon.classList.add('resultColumn');
+
+      const answer = window[`answers${category}`][index];
+      const correctAnswer = window[`correctAnswers${category}`][index];
+
+      if (answer === 'Passage') {
+        resultIcon.innerText = ''; // No display for "Passage"
+      } else if (answer === correctAnswer) {
+        resultIcon.innerText = '✔';
+        resultIcon.classList.add('tick');
+      } else {
+        resultIcon.innerText = '✘';
+        resultIcon.classList.add('cross');
+      }
+
+      return resultIcon;
+    }
+
+    function updateAnswerButtons(category) {
+      const buttons = document.querySelectorAll(`.answerButtons`);
+      buttons.forEach(button => {
+        button.classList.remove('selectedAnswer');
+        if (button.innerText === window[`selectedAnswer${category}`]) {
+          button.classList.add('selectedAnswer');
+        }
+      });
+    }
+
+    function updateResultColumn(index, category) {
+      const resultCell = document.getElementById(`lapTable${category}`).rows[index + 1].cells[4];
+      const resultIcon = createResultIcon(index, category);
+      resultCell.innerHTML = '';
+      resultCell.appendChild(resultIcon);
+    }
+
+    function lapToMilliseconds(lapTime) {
+      const [minutes, seconds] = lapTime.split(':');
+      return (parseInt(minutes) * 60 + parseInt(seconds)) * 1000;
+    }
+
+    function updateStatistics(category) {
+      const accuracySpan = document.getElementById(`accuracy${category}`);
+      const averageTimeSpan = document.getElementById(`averageTime${category}`);
+      const questionsWithinTimeSpan = document.getElementById(`questionsWithinTime${category}`);
+
+      const totalQuestionsVar = `lapCount${category}`;
+      const totalQuestionsSolved = window[`lapCount${category}`] - window[`answers${category}`].filter(answer => answer === 'Passage').length;
+      const tickMarks = document.querySelectorAll(`.tick${category}`).length;
+      const crossMarks = document.querySelectorAll(`.cross${category}`).length;
+
+      const accuracy = (tickMarks / (tickMarks + crossMarks)) * 100 || 0; // Avoid division by zero
+      const totalMilliseconds = window[`laps${category}`].reduce((acc, lap) => acc + lapToMilliseconds(lap), 0);
+      const averageTime = totalMilliseconds / totalQuestionsSolved || 0; // Avoid division by zero
+      const questionsWithinTime = window[`laps${category}`].filter(lap => lapToMilliseconds(lap) <= 90000 && lap !== 'Passage').length;
+
+      accuracySpan.innerText = `${accuracy.toFixed(2)}%`;
+      averageTimeSpan.innerText = formatTime(averageTime);
+      questionsWithinTimeSpan.innerText = questionsWithinTime;
+    }
+
+    // Function to copy the table
+    function copyTable(category) {
+      const lapTable = document.getElementById(`lapTable${category}`);
+      const range = document.createRange();
+      range.selectNode(lapTable);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+    }
+  </script>
+</body>
+</html>
